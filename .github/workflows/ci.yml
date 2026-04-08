@@ -14,7 +14,7 @@ jobs:
       - name: ShellCheck
         uses: ludeeus/action-shellcheck@2.0.0
         with:
-          scandir: '.'
+          additional_files: 'install.sh uninstall.sh test.sh'
       - name: Markdown lint
         uses: DavidAnson/markdownlint-cli2-action@v19
         with:
