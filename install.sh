@@ -31,6 +31,11 @@ if [ -f "$SCRIPT_DIR/state-template.json" ]; then
   cp "$SCRIPT_DIR/state-template.json" "$SKILL_DIR/state-template.json"
 fi
 
+if [ -d "$SCRIPT_DIR/schemas" ]; then
+  mkdir -p "$SKILL_DIR/schemas"
+  cp "$SCRIPT_DIR/schemas/"*.json "$SKILL_DIR/schemas/"
+fi
+
 # Secure secrets directory permissions
 SECRETS_DIR="$HOME/.claude/secrets"
 if [ -d "$SECRETS_DIR" ]; then
