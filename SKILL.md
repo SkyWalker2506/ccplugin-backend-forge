@@ -100,7 +100,7 @@ OUT: { "ok": true, "providers_enabled": ["email","google","facebook"], "pending_
 
 Supported providers: `email`, `google`, `facebook`, `apple`, `github`, `twitter`, `discord`, `linkedin`, `spotify`, `twitch`, `slack`, `notion`, `bitbucket`, `gitlab`, `azure`, `keycloak`, `phone`
 
-Zero-config: `email` works instantly. `phone` needs Twilio creds.
+Zero-config: `email` works instantly. `phone` needs Twilio creds. See auth-providers.md → Phone / SMS (Twilio) for setup steps.
 
 **Credential resolution (automatic):**
 1. Read `~/.claude/secrets/secrets.env`

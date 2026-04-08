@@ -46,3 +46,6 @@ jobs:
             uninstall.sh
             SKILL.md
             VERSION
+            schemas/commands.schema.json
+            schemas/state.schema.json
+            state-template.json

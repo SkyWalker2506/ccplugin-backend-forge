@@ -33,7 +33,7 @@
   },
   "projects": {},
   "preferences": {
-    "language": "tr",
+    "language": "en",
     "default_framework": "nextjs",
     "auto_deploy": true,
     "default_region": "eu-central-1",
