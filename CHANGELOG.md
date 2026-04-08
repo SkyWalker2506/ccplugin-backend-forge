@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.3.0] - 2026-04-08
+
+### Added
+- `setup_check` command for pre-flight environment validation
+- GitHub issue and PR templates (`.github/ISSUE_TEMPLATE/`, `.github/pull_request_template.md`)
+- Quickstart section in README for faster onboarding
+- Integration example in SKILL.md showing agent-to-agent usage
+- Firebase alternative documentation
+- Twilio phone auth setup docs
+- `.github/CODEOWNERS` for code ownership enforcement
+- `.editorconfig` for consistent editor settings across contributors
+
+### Fixed
+- `install.sh` for-loop syntax error
+- `test.sh` arithmetic expression (`PASS=$((PASS+1))`)
+- README output shape example corrected
+- `state.schema.json` `rateEntry` field name corrected
+- `state.schema.json` version enum updated
+
+### Changed
+- `state-template.json` language default changed from `"tr"` to `"en"`
+- Error codes documented in `SKILL.md` (9 total error codes)
+- `make check` is now a composite target
+- CI pipeline uses `make schema-validate` for schema validation
+
 ## [1.2.0] - 2026-04-08
 
 ### Added
