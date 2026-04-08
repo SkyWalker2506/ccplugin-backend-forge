@@ -27,6 +27,14 @@ if [ -f "$SCRIPT_DIR/auth-providers.md" ]; then
   cp "$SCRIPT_DIR/auth-providers.md" "$SKILL_DIR/auth-providers.md"
 fi
 
+if [ -f "$SCRIPT_DIR/SECURITY.md" ]; then
+  cp "$SCRIPT_DIR/SECURITY.md" "$SKILL_DIR/SECURITY.md"
+fi
+
+if [ -f "$SCRIPT_DIR/CHANGELOG.md" ]; then
+  cp "$SCRIPT_DIR/CHANGELOG.md" "$SKILL_DIR/CHANGELOG.md"
+fi
+
 if [ -f "$SCRIPT_DIR/state-template.json" ]; then
   cp "$SCRIPT_DIR/state-template.json" "$SKILL_DIR/state-template.json"
 fi
