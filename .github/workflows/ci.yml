@@ -34,8 +34,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Validate JSON schemas
-        run: |
-          for f in schemas/*.json state-template.json; do
-            python3 -c "import json; json.load(open('$f'))" || exit 1
-            echo "✓ $f valid"
-          done
+        run: make schema-validate

@@ -17,11 +17,7 @@ jobs:
         run: bash test.sh
 
       - name: Validate schemas
-        run: |
-          for f in schemas/*.json state-template.json; do
-            python3 -c "import json; json.load(open('$f'))" || exit 1
-            echo "✓ $f valid"
-          done
+        run: make schema-validate
 
       - name: Extract version
         id: version

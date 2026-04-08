@@ -1,4 +1,4 @@
-.PHONY: test lint schema-validate install uninstall help
+.PHONY: test lint schema-validate check install uninstall help
 
 help:
 	@echo "backend-forge Makefile"
@@ -6,6 +6,7 @@ help:
 	@echo "  make test              Run smoke tests"
 	@echo "  make lint              Run shellcheck on all scripts"
 	@echo "  make schema-validate   Validate all JSON files in schemas/"
+	@echo "  make check             Run all checks (schema-validate + test + lint)"
 	@echo "  make install           Install backend-forge skill"
 	@echo "  make uninstall         Uninstall backend-forge skill"
 
@@ -18,6 +19,8 @@ lint: schema-validate
 	else \
 		echo "shellcheck not installed — skipping (install with: brew install shellcheck)"; \
 	fi
+
+check: schema-validate test lint
 
 schema-validate:
 	@echo "Validating JSON schemas in schemas/..."; \
