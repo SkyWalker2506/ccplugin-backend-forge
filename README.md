@@ -43,6 +43,7 @@ Building a full-stack app with Claude means the AI needs to provision real infra
 
 | Command | Description |
 |---------|-------------|
+| `setup_check` | Verify tokens, CLI tools, and env configuration |
 | `create_project` | Create Vercel + Supabase project, wire env vars |
 | `deploy` | Deploy to Vercel, poll until ready |
 | `db_exec` | Execute raw SQL |
@@ -52,6 +53,39 @@ Building a full-stack app with Claude means the AI needs to provision real infra
 | `storage_create` | Create storage bucket |
 | `status` | Query project status |
 | `destroy` | Delete project (requires confirm) |
+
+## Quick Start
+
+Once installed, use `setup_check` to verify your environment, then `create_project` to bootstrap a new Vercel + Supabase stack.
+
+**1. Verify your environment:**
+
+```json
+// Input
+{ "command": "setup_check" }
+
+// Expected output
+{
+  "ready": true,
+  "checks": {
+    "vercel_token": "ok",
+    "supabase_token": "ok",
+    "vercel_cli": "ok",
+    "supabase_cli": "ok"
+  }
+}
+```
+
+**2. Bootstrap a new project:**
+
+```json
+// Input
+{
+  "command": "create_project",
+  "name": "my-app",
+  "framework": "nextjs"
+}
+```
 
 ## Installation
 
