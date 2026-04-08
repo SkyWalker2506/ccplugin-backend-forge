@@ -9,6 +9,22 @@
 
 Machine-callable infrastructure API layer for Claude Code. Other AI agents, MCPs, and skills call this plugin to deploy projects, create databases, configure auth, and manage environments — no human interaction needed.
 
+## Why backend-forge?
+
+| Feature | backend-forge | Pulumi Neo | Replit AI | v0 by Vercel | Terraform |
+|---------|:---:|:---:|:---:|:---:|:---:|
+| Agent-to-agent API (JSON in/out) | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Claude Code native | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Zero-token deploy (MCP) | ✅ | ❌ | ❌ | ✅ | ❌ |
+| 17 OAuth providers built-in | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Auto-credential resolution | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Full stack in one call | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Open source (MIT) | ✅ | ❌ | ❌ | ❌ | ✅ |
+| Multi-cloud | ❌ | ✅ | ❌ | ❌ | ✅ |
+| GUI/Dashboard | ❌ | ✅ | ✅ | ✅ | ❌ |
+
+**backend-forge is built for AI agents, not humans.** Other tools require UI interaction or natural language — backend-forge speaks JSON and executes API calls directly. If you're building Claude Code agents that need to provision infrastructure, this is the only tool designed for that exact use case.
+
 ## What it does
 
 Provides a standardized command interface that other agents call with JSON in/out. Default stack: **Vercel** (hosting) + **Supabase** (database, auth, storage). Alternative providers documented in `alternatives.md`.
@@ -60,6 +76,21 @@ This copies the skill to `~/.claude/skills/backend-forge/SKILL.md`.
 | Storage | Supabase Storage | Cloudflare R2, Uploadthing |
 
 See `alternatives.md` for setup details.
+
+## Compatibility
+
+Tested with:
+
+| Framework | Status |
+|-----------|--------|
+| Claude Code (native) | ✅ Fully supported |
+| Claude Agent SDK | ✅ Compatible |
+| LangChain / LangGraph | 🔄 Compatible (JSON tool interface) |
+| CrewAI | 🔄 Compatible (custom tool wrapper) |
+| AutoGen | 🔄 Compatible (function calling) |
+| Any MCP client | ✅ Via MCP server mode (planned) |
+
+> 🔄 = works via JSON in/out interface, no native integration yet
 
 ## License
 

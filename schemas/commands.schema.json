@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "backend-forge Command Schemas",
+  "description": "JSON Schema definitions for all backend-forge commands",
+  "definitions": {
+    "error_response": {
+      "type": "object",
+      "properties": {
+        "ok": { "const": false },
+        "error": { "type": "string", "enum": ["missing_secret", "quota_exceeded", "api_error", "not_found", "blocked_sql", "confirm_mismatch", "rate_limited", "state_version_unsupported", "invalid_input"] },
+        "detail": { "type": "string" }
+      },
+      "required": ["ok", "error"]
+    },
+    "create_project": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z0-9-]+$", "maxLength": 50 },
+          "framework": { "type": "string", "enum": ["nextjs", "remix", "nuxt", "sveltekit", "astro"], "default": "nextjs" },
+          "dry_run": { "type": "boolean", "default": false }
+        },
+        "required": ["name"]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "ok": { "const": true },
+          "vercel_url": { "type": "string", "format": "uri" },
+          "supabase_url": { "type": "string", "format": "uri" },
+          "env_set": { "type": "boolean" }
+        },
+        "required": ["ok"]
+      }
+    },
+    "deploy": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "dry_run": { "type": "boolean", "default": false }
+        },
+        "required": ["project"]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "ok": { "const": true },
+          "url": { "type": "string", "format": "uri" },
+          "status": { "type": "string", "enum": ["ready", "building", "error"] }
+        },
+        "required": ["ok"]
+      }
+    },
+    "db_exec": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "sql": { "type": "string", "maxLength": 10000 },
+          "dry_run": { "type": "boolean", "default": false }
+        },
+        "required": ["project", "sql"]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "ok": { "const": true },
+          "rows": { "type": "array" },
+          "row_count": { "type": "integer" }
+        },
+        "required": ["ok"]
+      }
+    },
+    "db_schema": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "tables": { "type": "object", "additionalProperties": { "type": "object", "additionalProperties": { "type": "string" } } },
+          "rls": { "type": "boolean", "default": true },
+          "dry_run": { "type": "boolean", "default": false }
+        },
+        "required": ["project", "tables"]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "ok": { "const": true },
+          "tables_created": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["ok"]
+      }
+    },
+    "auth_setup": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "providers": { "type": "array", "items": { "type": "string", "enum": ["email", "google", "facebook", "apple", "github", "twitter", "discord", "linkedin", "spotify", "twitch", "slack", "notion", "bitbucket", "gitlab", "azure", "keycloak", "phone"] } },
+          "dry_run": { "type": "boolean", "default": false }
+        },
+        "required": ["project", "providers"]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "ok": { "const": true },
+          "providers_enabled": { "type": "array", "items": { "type": "string" } },
+          "pending_config": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["ok"]
+      }
+    },
+    "env_set": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "vars": { "type": "object", "additionalProperties": { "type": "string" } },
+          "dry_run": { "type": "boolean", "default": false }
+        },
+        "required": ["project", "vars"]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "ok": { "const": true },
+          "count": { "type": "integer" }
+        },
+        "required": ["ok"]
+      }
+    },
+    "storage_create": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "bucket": { "type": "string" },
+          "public": { "type": "boolean", "default": false },
+          "dry_run": { "type": "boolean", "default": false }
+        },
+        "required": ["project", "bucket"]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "ok": { "const": true },
+          "url": { "type": "string", "format": "uri" }
+        },
+        "required": ["ok"]
+      }
+    },
+    "status": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" }
+        }
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "projects": { "type": "array" }
+        }
+      }
+    },
+    "destroy": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "confirm": { "type": "string", "description": "Must match project name exactly" }
+        },
+        "required": ["project", "confirm"]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "ok": { "const": true }
+        },
+        "required": ["ok"]
+      }
+    }
+  }
+}

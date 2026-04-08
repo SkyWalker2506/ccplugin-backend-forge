@@ -1,5 +1,5 @@
 ---
-name: infra-agent
+name: backend-forge
 description: "Machine-callable infrastructure API layer. Other AI agents, MCPs, and skills call this to deploy projects live. NOT for direct user interaction. Trigger when any agent needs: project creation, deployment, database setup, auth config, env variables, or any infra operation. Provides standardized commands that execute real API calls with minimal tokens. Integrates with cloud-secrets for credential management."
 ---
 
@@ -41,13 +41,18 @@ SUPABASE_DB_PASSWORD=...
 
 Vercel: via MCP (no token needed).
 
-**Resolution:** `secrets.env` for shared keys → `projects/{name}.env` for project keys → inline override → error with setup URL
+**Resolution:** `secrets.env` for shared keys → `projects/{name}.env` for project keys → error with setup URL
 
 **State:** `.secrets/state.json` (local, auto-managed)
 
 ---
 
 ## Commands
+
+### Global Parameters
+
+All commands accept these optional parameters:
+- `dry_run` (boolean): If true, validate input and return planned actions without executing. Response includes `"dry_run": true` and `"plan": [...]` array.
 
 All: INPUT JSON → execute → OUTPUT JSON.
 
@@ -70,7 +75,14 @@ Exec: Vercel MCP deploy → poll until ready
 IN:  { "project": "x", "sql": "CREATE TABLE..." }
 OUT: { "ok": true }
 ```
-Exec: Supabase `POST /v1/projects/{ref}/database/query`
+
+**SQL Safety:** Before execution, reject any SQL containing dangerous keywords:
+`DROP DATABASE`, `DROP SCHEMA`, `GRANT`, `REVOKE`, `ALTER ROLE`, `CREATE ROLE`,
+`COPY TO`, `pg_dump`, `pg_read_file`, `pg_write_file`, `lo_import`, `lo_export`.
+Return `{ "ok": false, "error": "blocked_sql", "detail": "Dangerous SQL keyword detected: [keyword]" }`.
+Only `public` schema is allowed — queries targeting `pg_catalog`, `information_schema` (write), or `auth` schema are blocked.
+
+Exec: Validate SQL → Supabase `POST /v1/projects/{ref}/database/query`
 
 ### `db_schema`
 ```json
@@ -111,12 +123,6 @@ Special cases: `AUTH_APPLE_SECRET` (base64 .p8 key), `AUTH_KEYCLOAK_URL` (realm 
 
 Exec: Read secrets → Supabase `PUT /auth/v1/config` per provider → update state
 
-**Override:** credentials can still be passed inline for one-off use:
-```json
-IN:  { "project": "x", "providers": ["google"], "credentials": { "google": { "client_id": "...", "client_secret": "..." } } }
-```
-Priority: inline `credentials` > `secrets.env` > `pending_config`
-
 **Callback URL** (same for all): `https://{supabase_ref}.supabase.co/auth/v1/callback`
 
 See `auth-providers.md` for per-provider setup guide with console URLs.
@@ -142,9 +148,10 @@ OUT: { "projects": [{ "name":"x", "url":"...", "status":"ready" }] }
 
 ### `destroy`
 ```json
-IN:  { "project": "x", "confirm": true }
+IN:  { "project": "x", "confirm": "x" }
 OUT: { "ok": true }
 ```
+**Safety:** `confirm` must be the exact project name (not a boolean). Mismatched name → `{ "ok": false, "error": "confirm_mismatch", "detail": "confirm value must match project name" }`.
 
 ---
 
@@ -169,10 +176,57 @@ DELETE /v1/projects/{ref}               delete
 { "v":1, "projects": { "x": { "vercel_id":"prj_x", "supabase_ref":"ref_x", "created":"2026-04-08" } } }
 ```
 
+## State Migration
+
+When state version changes, auto-migrate on first read:
+- v1 → v2: add `_rate` field, convert `projects` array to object (if needed)
+- Unknown version → error: `{ "ok": false, "error": "state_version_unsupported" }`
+- Missing state → create from template
+- Backup before migration: `.secrets/state.json.bak`
+
 ## Error Format
 ```json
 { "ok": false, "error": "missing_secret|quota_exceeded|api_error|not_found", "detail": "..." }
 ```
+
+## Audit Logging
+
+Every command invocation is logged to `~/.claude/secrets/.audit.log`:
+```
+FORMAT: [ISO_TIMESTAMP] [COMMAND] [PROJECT] [STATUS] [DURATION_MS]
+Example: 2026-04-08T14:30:00Z create_project myapp ok 3200
+```
+- Secret values are NEVER logged
+- Log file permissions: 600
+- Max size: 10MB (rotate to .audit.log.1)
+
+## Rate Limiting
+
+| Command | Limit |
+|---------|-------|
+| create_project | 5/hour |
+| destroy | 1/hour |
+| deploy | 10/hour |
+| db_exec | 30/hour |
+| Others | 60/hour |
+
+Exceeded → `{ "ok": false, "error": "rate_limited", "detail": "destroy limit: 1/hour, retry after: [seconds]s" }`
+Counters stored in state.json `_rate` field. Reset hourly.
+
+## Telemetry (opt-in)
+
+Anonymous usage stats, disabled by default:
+```json
+{ "telemetry": true }  // in state.json preferences
+```
+
+Collected (anonymous, no PII):
+- Command name + frequency
+- Success/failure ratio
+- Framework type (nextjs, remix, etc.)
+
+NOT collected: project names, URLs, secrets, SQL content.
+Endpoint: configurable in state.json. Default: none (local-only counters in state.json `_telemetry`).
 
 ## Rules for Calling Agents
 - JSON in, JSON out — no prose
