@@ -79,6 +79,52 @@ Use this file when user wants to switch from the default stack.
 
 ---
 
+## Firebase (Full-Stack Alternative)
+
+Firebase is a Google-backed platform that combines hosting, auth, database, and storage in one ecosystem.
+
+### Firebase Hosting
+- **What:** Static + dynamic hosting with CDN, supports Cloud Functions for server-side logic
+- **Free tier:** Spark plan — 10GB storage, 360MB/day bandwidth, custom domain with SSL
+- **Setup:**
+  ```bash
+  npm install -g firebase-tools
+  firebase login
+  firebase init
+  firebase deploy
+  ```
+- **Best for:** Single-page apps, static sites, mobile app backends
+
+### Firebase Authentication
+- **What:** Drop-in auth with many built-in providers — Google, Email/Password, Phone SMS, Apple, GitHub, Facebook, Twitter, Microsoft, and more
+- **Free tier:** Unlimited auth (Spark plan), Phone auth: 10,000 SMS/mo
+- **Setup:** Enable providers in Firebase Console → Authentication → Sign-in method
+- **Best for:** Mobile-first apps, apps needing phone/SMS auth, Google ecosystem projects
+
+### Firestore (Realtime NoSQL Database)
+- **What:** Document-based NoSQL database with realtime listeners and offline support
+- **Free tier:** Spark plan — 1GB storage, 50K reads/day, 20K writes/day, 20K deletes/day
+- **API:** SDK (JS, iOS, Android, Flutter) + REST
+- **Best for:** Realtime data sync, mobile apps, hierarchical data
+
+### When to choose Firebase vs Vercel + Supabase
+
+| Factor | Firebase | Vercel + Supabase |
+|--------|----------|-------------------|
+| Data model | NoSQL (documents) | SQL (PostgreSQL) |
+| Realtime | Built-in, seamless | Available (Realtime channels) |
+| Mobile SDKs | First-class (iOS/Android/Flutter) | Community SDKs |
+| Ecosystem | Google Cloud | Open source, self-hostable |
+| Auth providers | 10+ built-in including Phone | OAuth + email, Phone via Twilio |
+| Edge functions | Cloud Functions (regions) | Edge Functions (Deno, global) |
+| SQL queries | No — NoSQL only | Yes — full PostgreSQL |
+
+**Choose Firebase when:** mobile-first app, realtime data is core, already in Google ecosystem, need Phone SMS auth out of the box.
+
+**Choose Vercel + Supabase when:** relational data/SQL needed, open source preference, self-hosting option matters, edge functions at global scale.
+
+---
+
 ## Hosting Alternatives
 
 ### Netlify
