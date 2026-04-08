@@ -146,6 +146,50 @@ IN:  { "project": "x" }  // optional, omit=all
 OUT: { "projects": [{ "name":"x", "url":"...", "status":"ready" }] }
 ```
 
+### `setup_check`
+```json
+IN:  {}
+OUT: {
+  "ok": true,
+  "tokens": {
+    "VERCEL_TOKEN": "set|missing",
+    "SUPABASE_ACCESS_TOKEN": "set|missing"
+  },
+  "cli": {
+    "vercel": "accessible|missing",
+    "supabase": "accessible|missing"
+  },
+  "ready": true,
+  "missing": []
+}
+```
+Verifies the environment is fully configured before running other commands.
+
+**Checks performed:**
+1. `VERCEL_TOKEN` — present in `~/.claude/secrets/secrets.env` or environment
+2. `SUPABASE_ACCESS_TOKEN` — present in `~/.claude/secrets/secrets.env` or environment
+3. Vercel CLI — `vercel --version` exits 0
+4. Supabase CLI — `supabase --version` exits 0
+
+**`ready`** is `true` only when all four checks pass. **`missing`** lists the names of failed checks.
+
+If any check fails, `ok` is still `true` (command itself succeeded) but `ready` is `false`:
+```json
+{ "ok": true, "ready": false, "missing": ["VERCEL_TOKEN", "vercel_cli"] }
+```
+
+Example usage:
+```json
+IN:  {}
+OUT: {
+  "ok": true,
+  "tokens": { "VERCEL_TOKEN": "set", "SUPABASE_ACCESS_TOKEN": "set" },
+  "cli": { "vercel": "accessible", "supabase": "accessible" },
+  "ready": true,
+  "missing": []
+}
+```
+
 ### `destroy`
 ```json
 IN:  { "project": "x", "confirm": "x" }
