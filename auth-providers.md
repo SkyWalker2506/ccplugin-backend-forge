@@ -92,6 +92,8 @@ AUTH_KEYCLOAK_URL=
 
 ### 3. Save and push
 
+> **WARNING:** The secrets directory (`~/.claude/secrets`) must be a **private** Git repository. Never push secrets to a public repo. Verify with: `gh repo view --json isPrivate -q .isPrivate`
+
 ```bash
 cd ~/.claude/secrets && git add secrets.env && git commit -m "add auth providers" && git push
 ```
