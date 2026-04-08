@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "Installing $SKILL_NAME..."
 
-VERSION="1.1.0"
+VERSION="$(cat "$SCRIPT_DIR/VERSION")"
 
 # Version check
 if [ -f "$SKILL_DIR/SKILL.md" ] && [ "${1:-}" != "--force" ]; then
