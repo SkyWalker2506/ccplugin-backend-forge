@@ -53,6 +53,7 @@ Vercel: via MCP (no token needed).
 
 All commands accept these optional parameters:
 - `dry_run` (boolean): If true, validate input and return planned actions without executing. Response includes `"dry_run": true` and `"plan": [...]` array.
+  - `plan`: array of strings describing what would be executed, e.g. `["GET /v1/projects/{id}", "GET /v1/databases"]`
 
 All: INPUT JSON → execute → OUTPUT JSON.
 

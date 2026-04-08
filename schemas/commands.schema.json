@@ -159,7 +159,8 @@
       "input": {
         "type": "object",
         "properties": {
-          "project": { "type": "string" }
+          "project": { "type": "string" },
+          "dry_run": { "$ref": "#/definitions/dry_run" }
         }
       },
       "output": {
@@ -174,7 +175,8 @@
         "type": "object",
         "properties": {
           "project": { "type": "string" },
-          "confirm": { "type": "string", "description": "Must match project name exactly" }
+          "confirm": { "type": "string", "description": "Must match project name exactly" },
+          "dry_run": { "$ref": "#/definitions/dry_run" }
         },
         "required": ["project", "confirm"]
       },
