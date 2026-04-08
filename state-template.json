@@ -52,7 +52,8 @@
     "auth_setup": { "count": 0, "reset_at": null },
     "env_set": { "count": 0, "reset_at": null },
     "storage_create": { "count": 0, "reset_at": null },
-    "status": { "count": 0, "reset_at": null }
+    "status": { "count": 0, "reset_at": null },
+    "setup_check": { "count": 0, "reset_at": null }
   },
   "_telemetry": {
     "commands": {},
