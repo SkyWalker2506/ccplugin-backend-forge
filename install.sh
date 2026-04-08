@@ -7,6 +7,15 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "Installing $SKILL_NAME..."
 
+VERSION="1.1.0"
+
+# Version check
+if [ -f "$SKILL_DIR/SKILL.md" ] && [ "${1:-}" != "--force" ]; then
+  echo "backend-forge already installed at $SKILL_DIR"
+  echo "Use --force to overwrite: ./install.sh --force"
+  exit 0
+fi
+
 mkdir -p "$SKILL_DIR"
 cp "$SCRIPT_DIR/SKILL.md" "$SKILL_DIR/SKILL.md"
 

@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: '.'
+      - name: Markdown lint
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: '*.md'
+          config: |
+            { "MD013": false, "MD033": false, "MD041": false }
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run smoke tests
+        run: bash test.sh
+
+  schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JSON schemas
+        run: |
+          for f in schemas/*.json state-template.json; do
+            python3 -c "import json; json.load(open('$f'))" || exit 1
+            echo "✓ $f valid"
+          done
