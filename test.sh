@@ -48,7 +48,7 @@ echo "security"
 
 # Test 7: No secrets in committed files
 echo "secret leak check"
-! grep -rn --exclude=test.sh "sk_live\|sk_test\|eyJhbG\|AKIA" "$SCRIPT_DIR"/*.md "$SCRIPT_DIR"/*.json "$SCRIPT_DIR"/*.sh 2>/dev/null && pass "no secrets found" || fail "possible secret leak!"
+! grep -rn --include="*.md" --include="*.json" --include="*.sh" --exclude=test.sh "sk_live\|sk_test\|eyJhbG\|AKIA" "$SCRIPT_DIR" 2>/dev/null && pass "no secrets found" || fail "possible secret leak!"
 
 # Test 8: install.sh version check
 echo "install.sh features"
@@ -101,6 +101,32 @@ EXPECTED_INSTALL_DIR="$TEMP_DIR/.claude/skills/backend-forge"
 HOME="$TEMP_DIR" bash "$SCRIPT_DIR/uninstall.sh" --force > /dev/null 2>&1
 [ ! -d "$EXPECTED_INSTALL_DIR" ] && pass "uninstall cleaned up" || fail "uninstall left files"
 rm -rf "$TEMP_DIR"
+
+# Test 14: setup_check schema structure
+section() { echo "$1"; }
+section "setup_check schema"
+SC_DEF=$(python3 -c "import json,sys; d=json.load(open('$SCRIPT_DIR/schemas/commands.schema.json')); print(json.dumps(d))" 2>/dev/null)
+if echo "$SC_DEF" | python3 -c "import json,sys; d=json.load(sys.stdin); assert 'setup_check' in d.get('definitions',{})" 2>/dev/null; then
+  pass "setup_check definition in commands schema"
+else
+  fail "setup_check definition missing from commands schema"
+fi
+
+# Test 15: setup_check _rate entry
+section "setup_check _rate"
+if python3 -c "import json; d=json.load(open('$SCRIPT_DIR/state-template.json')); assert 'setup_check' in d.get('_rate',{})" 2>/dev/null; then
+  pass "setup_check in state-template _rate"
+else
+  fail "setup_check missing from state-template _rate"
+fi
+
+# Test 16: setup_check output shape in schema
+section "setup_check output"
+if python3 -c "import json; d=json.load(open('$SCRIPT_DIR/schemas/commands.schema.json')); sc=d['definitions']['setup_check']; out=sc.get('output',sc.get('response',{})); assert 'ready' in out.get('properties',{})" 2>/dev/null; then
+  pass "setup_check output has ready field"
+else
+  fail "setup_check output missing ready field"
+fi
 
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
