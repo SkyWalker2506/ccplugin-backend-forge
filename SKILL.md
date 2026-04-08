@@ -3,12 +3,12 @@ name: backend-forge
 description: "Machine-callable infrastructure API layer. Other AI agents, MCPs, and skills call this to deploy projects live. NOT for direct user interaction. Trigger when any agent needs: project creation, deployment, database setup, auth config, env variables, or any infra operation. Provides standardized commands that execute real API calls with minimal tokens. Integrates with cloud-secrets for credential management."
 ---
 
-# Infra Agent — API Layer for AI Agents
+# Backend Forge — API Layer for AI Agents
 
 > Agents call commands. Commands execute API calls. No conversation. Minimum tokens.
 
 ```
-[Any AI Agent / MCP / Skill]  →  [infra-agent cmd]  →  [cloud-secrets]  →  [Provider API]  →  JSON result
+[Any AI Agent / MCP / Skill]  →  [backend-forge cmd]  →  [cloud-secrets]  →  [Provider API]  →  JSON result
 ```
 
 ## Secrets
