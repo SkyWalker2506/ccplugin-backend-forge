@@ -29,7 +29,7 @@ Supabase Auth entegrasyonu; credential'lar `~/.claude/secrets/secrets.env`'den o
 ## Tech Tercihi
 Vercel (hosting) + Supabase (DB/Auth/Storage) — shell script installer, Markdown skill dosyası
 
-## Açık Sorular
-- CI/CD pipeline yok
-- Test suite yok
-- Versiyon yönetimi basit (tek SKILL.md dosyası)
+## Resolved (as of v1.2.0)
+- CI/CD pipeline: GitHub Actions (shellcheck, markdown lint, schema validation, smoke tests)
+- Test suite: test.sh smoke tests
+- Version management: VERSION file + CHANGELOG.md + semver tagging
