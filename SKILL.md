@@ -145,7 +145,32 @@ OUT: { "ok": true, "url": "..." }
 ### `status`
 ```json
 IN:  { "project": "x" }  // optional, omit=all
-OUT: { "projects": [{ "name":"x", "url":"...", "status":"ready" }] }
+
+// Single project (when `project` is specified):
+OUT: {
+  "ok": true,
+  "name": "x",
+  "url": "https://x.vercel.app",
+  "status": "ready",
+  "vercel_id": "prj_...",
+  "supabase_ref": "abcdefghij",
+  "framework": "nextjs",
+  "region": "iad1"
+}
+
+// All projects (when `project` is omitted):
+OUT: {
+  "ok": true,
+  "projects": [
+    {
+      "name": "x",
+      "url": "https://x.vercel.app",
+      "status": "active|inactive",
+      "vercel_id": "prj_...",
+      "supabase_ref": "abcdefghij"
+    }
+  ]
+}
 ```
 
 ### `setup_check`
