@@ -9,7 +9,7 @@
   "properties": {
     "version": {
       "type": "string",
-      "enum": ["1.0", "2"],
+      "enum": ["1", "2"],
       "description": "State file schema version"
     },
     "setup_complete": {
@@ -216,8 +216,8 @@
           "minimum": 0,
           "description": "Number of calls in current window"
         },
-        "window_start": {
-          "type": "string",
+        "reset_at": {
+          "type": ["string", "null"],
           "description": "ISO 8601 timestamp when current window started"
         },
         "limit": {
