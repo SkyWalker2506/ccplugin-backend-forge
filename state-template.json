@@ -17,7 +17,9 @@
     "auth": {
       "name": null,
       "ready": false,
-      "via": "database"
+      "via": "database",
+      "enabled_providers": [],
+      "pending_config": []
     },
     "storage": {
       "name": null,

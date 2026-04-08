@@ -30,7 +30,7 @@ Building a full-stack app with Claude means the AI needs to provision real infra
 | `deploy` | Deploy to Vercel, poll until ready |
 | `db_exec` | Execute raw SQL |
 | `db_schema` | Create tables from shorthand + RLS |
-| `auth_setup` | Enable auth providers |
+| `auth_setup` | Enable auth providers (17 supported — auto-reads from secrets.env) |
 | `env_set` | Set environment variables |
 | `storage_create` | Create storage bucket |
 | `status` | Query project status |

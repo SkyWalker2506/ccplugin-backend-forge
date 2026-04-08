@@ -13,16 +13,37 @@ description: "Machine-callable infrastructure API layer. Other AI agents, MCPs, 
 
 ## Secrets
 
-**Priority:** `cloud-secrets` repo → `.secrets/` local dir → env vars
+**Source:** `~/.claude/secrets/` (synced via `claude-secrets` private repo)
 
 ```
-.secrets/
-├── supabase.json   # { "access_token": "sbp_...", "org_id": "..." }
-├── vercel.json     # { "token": "..." } — only if MCP unavailable
-└── state.json      # project registry (auto-managed)
+~/.claude/secrets/
+├── secrets.env              # Genel: AI keys, Supabase token, AUTH_* credentials
+└── projects/
+    ├── coinhq.env           # Proje bazli: SUPABASE_URL, DB_PASSWORD, vs.
+    ├── artlift.env
+    └── {project-name}.env   # Yeni proje → yeni dosya
 ```
 
-Bootstrap: if missing → create `.secrets/` + empty templates → return `{"ok":false,"error":"missing_secret","setup_url":"https://supabase.com/dashboard/account/tokens"}` → caller fills → next call works.
+**General keys** (secrets.env):
+```
+SUPABASE_ACCESS_TOKEN=...              # Management API
+AUTH_{PROVIDER}_CLIENT_ID=...          # OAuth (see auth-providers.md)
+AUTH_{PROVIDER}_CLIENT_SECRET=...
+```
+
+**Project keys** (projects/{name}.env — no prefix, standard names):
+```
+SUPABASE_URL=...
+SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+SUPABASE_DB_PASSWORD=...
+```
+
+Vercel: via MCP (no token needed).
+
+**Resolution:** `secrets.env` for shared keys → `projects/{name}.env` for project keys → inline override → error with setup URL
+
+**State:** `.secrets/state.json` (local, auto-managed)
 
 ---
 
@@ -60,9 +81,45 @@ Shorthand: `pk`=PRIMARY KEY+uuid, `fk:t.c`=REFERENCES, `unique`=UNIQUE NOT NULL.
 
 ### `auth_setup`
 ```json
-IN:  { "project": "x", "providers": ["email","google"] }
-OUT: { "ok": true, "providers_enabled": ["email","google"] }
+IN:  { "project": "x", "providers": ["email","google","facebook"] }
+OUT: { "ok": true, "providers_enabled": ["email","google","facebook"], "pending_config": [] }
 ```
+
+Supported providers: `email`, `google`, `facebook`, `apple`, `github`, `twitter`, `discord`, `linkedin`, `spotify`, `twitch`, `slack`, `notion`, `bitbucket`, `gitlab`, `azure`, `keycloak`, `phone`
+
+Zero-config: `email` works instantly. `phone` needs Twilio creds.
+
+**Credential resolution (automatic):**
+1. Read `~/.claude/secrets/secrets.env`
+2. Look for `AUTH_{PROVIDER}_CLIENT_ID` and `AUTH_{PROVIDER}_CLIENT_SECRET`
+3. If found → enable provider with credentials automatically
+4. If missing → return in `pending_config` with setup URL + env var names to add
+
+```
+# secrets.env — AUTH section example:
+# --- AUTH PROVIDERS ---
+AUTH_GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
+AUTH_GOOGLE_CLIENT_SECRET=GOCSPX-xxx
+AUTH_FACEBOOK_CLIENT_ID=123456789
+AUTH_FACEBOOK_CLIENT_SECRET=abc123
+AUTH_GITHUB_CLIENT_ID=Iv1.xxx
+AUTH_GITHUB_CLIENT_SECRET=xxx
+```
+
+Naming convention: `AUTH_{PROVIDER}_CLIENT_ID` / `AUTH_{PROVIDER}_CLIENT_SECRET`
+Special cases: `AUTH_APPLE_SECRET` (base64 .p8 key), `AUTH_KEYCLOAK_URL` (realm URL)
+
+Exec: Read secrets → Supabase `PUT /auth/v1/config` per provider → update state
+
+**Override:** credentials can still be passed inline for one-off use:
+```json
+IN:  { "project": "x", "providers": ["google"], "credentials": { "google": { "client_id": "...", "client_secret": "..." } } }
+```
+Priority: inline `credentials` > `secrets.env` > `pending_config`
+
+**Callback URL** (same for all): `https://{supabase_ref}.supabase.co/auth/v1/callback`
+
+See `auth-providers.md` for per-provider setup guide with console URLs.
 
 ### `env_set`
 ```json
