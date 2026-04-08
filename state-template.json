@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "2",
   "setup_complete": false,
   "providers": {
     "hosting": {
@@ -37,9 +37,26 @@
     "default_framework": "nextjs",
     "auto_deploy": true,
     "default_region": "eu-central-1",
+    "telemetry": false,
     "notifications": {
       "email_on_deploy": false,
       "jira_on_create": false
     }
+  },
+  "_rate": {
+    "create_project": { "count": 0, "reset_at": null },
+    "destroy": { "count": 0, "reset_at": null },
+    "deploy": { "count": 0, "reset_at": null },
+    "db_exec": { "count": 0, "reset_at": null },
+    "db_schema": { "count": 0, "reset_at": null },
+    "auth_setup": { "count": 0, "reset_at": null },
+    "env_set": { "count": 0, "reset_at": null },
+    "storage_create": { "count": 0, "reset_at": null },
+    "status": { "count": 0, "reset_at": null }
+  },
+  "_telemetry": {
+    "commands": {},
+    "errors": 0,
+    "last_sent": null
   }
 }
