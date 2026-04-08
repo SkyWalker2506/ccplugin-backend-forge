@@ -88,6 +88,11 @@ AUTH_BITBUCKET_CLIENT_SECRET=
 AUTH_KEYCLOAK_CLIENT_ID=
 AUTH_KEYCLOAK_CLIENT_SECRET=
 AUTH_KEYCLOAK_URL=
+
+# Phone / SMS — https://console.twilio.com
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_PHONE_NUMBER=
 ```
 
 ### 3. Save and push
@@ -264,6 +269,57 @@ Replace `<your-supabase-ref>` with your Supabase project reference ID (found in 
 4. Permissions: check **Account — Read**
 5. **Save** → copy **Key** (= client_id) and **Secret**
 6. Paste into `secrets.env`
+
+### Phone / SMS (Twilio)
+
+> Twilio offers a free trial with $15 credit — enough to test SMS auth without a credit card.
+
+**1. Create a Twilio account**
+
+1. Go to [twilio.com](https://www.twilio.com) → **Sign up for free**
+2. Verify your email and phone number to activate the trial
+
+**2. Get your credentials from Twilio Console**
+
+1. Log in at [console.twilio.com](https://console.twilio.com)
+2. From the **Account Info** panel on the homepage, copy:
+   - **Account SID** (starts with `AC…`)
+   - **Auth Token** (click the eye icon to reveal)
+3. Go to **Phone Numbers → Manage → Active Numbers**
+4. If you don't have one: **Buy a Number** → select a number with **SMS** capability → **Buy**
+5. Copy the phone number in E.164 format (e.g. `+15551234567`)
+
+**3. Add to secrets.env**
+
+```bash
+# Phone / SMS (Twilio) — https://console.twilio.com
+TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TWILIO_AUTH_TOKEN=your_auth_token_here
+TWILIO_PHONE_NUMBER=+15551234567
+```
+
+**4. Enable in Supabase Dashboard**
+
+1. Go to your Supabase project → **Authentication → Providers**
+2. Find **Phone** and toggle it on
+3. Paste:
+   - **Twilio Account SID** → `TWILIO_ACCOUNT_SID`
+   - **Twilio Auth Token** → `TWILIO_AUTH_TOKEN`
+   - **Twilio Message Service SID or From** → `TWILIO_PHONE_NUMBER`
+4. Click **Save**
+
+**5. Test**
+
+Send an OTP to a real phone number to verify the setup:
+
+```bash
+# Using Supabase JS client
+const { data, error } = await supabase.auth.signInWithOtp({ phone: '+15559876543' })
+```
+
+> **Trial account limitation:** Twilio trial accounts can only send SMS to verified numbers. Go to [console.twilio.com/verified-caller-ids](https://console.twilio.com/us1/develop/phone-numbers/verified-caller-ids) to verify test numbers before upgrading.
+
+---
 
 ### Keycloak
 
