@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/SkyWalker2506/ccplugin-backend-forge/schemas/state.schema.json",
+  "title": "Backend Forge State",
+  "description": "Schema for .secrets/state.json — auto-managed state file for the backend-forge skill",
+  "type": "object",
+  "required": ["version", "setup_complete", "providers", "projects", "preferences"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "enum": ["1.0", "2"],
+      "description": "State file schema version"
+    },
+    "setup_complete": {
+      "type": "boolean",
+      "description": "Whether initial provider setup has been completed"
+    },
+    "providers": {
+      "type": "object",
+      "description": "Configured infrastructure providers",
+      "required": ["hosting", "database", "auth", "storage", "edge_functions"],
+      "additionalProperties": false,
+      "properties": {
+        "hosting": {
+          "$ref": "#/$defs/providerBase",
+          "description": "Hosting provider (e.g. vercel)"
+        },
+        "database": {
+          "type": "object",
+          "description": "Database provider (e.g. supabase)",
+          "required": ["name", "ready"],
+          "additionalProperties": true,
+          "properties": {
+            "name": {
+              "type": ["string", "null"],
+              "description": "Provider name"
+            },
+            "ready": {
+              "type": "boolean",
+              "description": "Whether provider is ready"
+            },
+            "org_id": {
+              "type": ["string", "null"],
+              "description": "Organization ID for the database provider"
+            },
+            "via": {
+              "type": ["string", "null"],
+              "description": "How this provider is accessed"
+            }
+          }
+        },
+        "auth": {
+          "type": "object",
+          "description": "Auth provider, typically co-located with database",
+          "required": ["name", "ready"],
+          "additionalProperties": true,
+          "properties": {
+            "name": {
+              "type": ["string", "null"],
+              "description": "Provider name"
+            },
+            "ready": {
+              "type": "boolean",
+              "description": "Whether provider is ready"
+            },
+            "via": {
+              "type": ["string", "null"],
+              "description": "How this provider is accessed (e.g. 'database')"
+            },
+            "enabled_providers": {
+              "type": "array",
+              "description": "List of enabled auth providers",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pending_config": {
+              "type": "array",
+              "description": "Auth providers awaiting credential configuration",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "storage": {
+          "$ref": "#/$defs/providerBase",
+          "description": "Object storage provider"
+        },
+        "edge_functions": {
+          "$ref": "#/$defs/providerBase",
+          "description": "Edge functions provider"
+        }
+      }
+    },
+    "projects": {
+      "type": "object",
+      "description": "Map of project name to project metadata",
+      "additionalProperties": {
+        "$ref": "#/$defs/project"
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "description": "User preferences for the skill",
+      "required": ["language", "default_framework", "auto_deploy", "default_region"],
+      "additionalProperties": true,
+      "properties": {
+        "language": {
+          "type": "string",
+          "description": "Preferred language code (e.g. 'tr', 'en')"
+        },
+        "default_framework": {
+          "type": "string",
+          "description": "Default project framework (e.g. 'nextjs')"
+        },
+        "auto_deploy": {
+          "type": "boolean",
+          "description": "Whether to auto-deploy after project creation"
+        },
+        "default_region": {
+          "type": "string",
+          "description": "Default cloud region (e.g. 'eu-central-1')"
+        },
+        "notifications": {
+          "type": "object",
+          "description": "Notification preferences",
+          "additionalProperties": true,
+          "properties": {
+            "email_on_deploy": {
+              "type": "boolean",
+              "description": "Send email notification on deploy"
+            },
+            "jira_on_create": {
+              "type": "boolean",
+              "description": "Create Jira issue on project creation"
+            }
+          }
+        },
+        "telemetry": {
+          "type": "boolean",
+          "description": "Whether anonymous telemetry is enabled"
+        }
+      }
+    },
+    "_rate": {
+      "type": "object",
+      "description": "Rate limiting counters per command (optional, auto-managed)",
+      "additionalProperties": {
+        "$ref": "#/$defs/rateEntry"
+      }
+    },
+    "_telemetry": {
+      "type": "object",
+      "description": "Anonymous usage counters (optional, auto-managed)",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Invocation count for a command or event"
+      }
+    }
+  },
+  "$defs": {
+    "providerBase": {
+      "type": "object",
+      "required": ["name", "ready"],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": ["string", "null"],
+          "description": "Provider name"
+        },
+        "ready": {
+          "type": "boolean",
+          "description": "Whether provider is configured and ready"
+        },
+        "via": {
+          "type": ["string", "null"],
+          "description": "Access method (e.g. 'mcp', 'database', 'hosting')"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Human-readable notes about this provider"
+        }
+      }
+    },
+    "project": {
+      "type": "object",
+      "description": "Project metadata",
+      "required": ["vercel_id", "supabase_ref", "created"],
+      "additionalProperties": true,
+      "properties": {
+        "vercel_id": {
+          "type": "string",
+          "description": "Vercel project ID (e.g. 'prj_xxx')"
+        },
+        "supabase_ref": {
+          "type": "string",
+          "description": "Supabase project reference ID"
+        },
+        "created": {
+          "type": "string",
+          "description": "ISO 8601 creation date (e.g. '2026-04-08')",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}(T[\\d:.]+Z?)?$"
+        }
+      }
+    },
+    "rateEntry": {
+      "type": "object",
+      "description": "Rate limit tracking for a single command",
+      "additionalProperties": true,
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of calls in current window"
+        },
+        "window_start": {
+          "type": "string",
+          "description": "ISO 8601 timestamp when current window started"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum calls allowed per window"
+        }
+      }
+    }
+  }
+}
