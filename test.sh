@@ -97,6 +97,10 @@ EXPECTED_INSTALL_DIR="$TEMP_DIR/.claude/skills/backend-forge"
 [ -f "$EXPECTED_INSTALL_DIR/SKILL.md" ] && pass "SKILL.md installed" || fail "SKILL.md not installed"
 [ -d "$EXPECTED_INSTALL_DIR/schemas" ] && pass "schemas/ installed" || fail "schemas/ not installed"
 [ -f "$EXPECTED_INSTALL_DIR/state-template.json" ] && pass "state-template.json installed" || fail "state-template.json not installed"
+[ -f "$TEMP_DIR/.claude/skills/backend-forge/auth-providers.md" ] && pass "auth-providers.md installed" || fail "auth-providers.md not installed"
+[ -f "$TEMP_DIR/.claude/skills/backend-forge/alternatives.md" ] && pass "alternatives.md installed" || fail "alternatives.md not installed"
+[ -f "$TEMP_DIR/.claude/skills/backend-forge/SECURITY.md" ] && pass "SECURITY.md installed" || fail "SECURITY.md not installed"
+[ -f "$TEMP_DIR/.claude/skills/backend-forge/CHANGELOG.md" ] && pass "CHANGELOG.md installed" || fail "CHANGELOG.md not installed"
 # Uninstall
 HOME="$TEMP_DIR" bash "$SCRIPT_DIR/uninstall.sh" --force > /dev/null 2>&1
 [ ! -d "$EXPECTED_INSTALL_DIR" ] && pass "uninstall cleaned up" || fail "uninstall left files"
@@ -126,6 +130,13 @@ if python3 -c "import json; d=json.load(open('$SCRIPT_DIR/schemas/commands.schem
   pass "setup_check output has ready field"
 else
   fail "setup_check output missing ready field"
+fi
+
+section "CHANGELOG format"
+if grep -q "^## \[" "$SCRIPT_DIR/CHANGELOG.md" 2>/dev/null; then
+  pass "CHANGELOG has versioned section"
+else
+  fail "CHANGELOG missing versioned sections (## [x.y.z] format)"
 fi
 
 echo ""
