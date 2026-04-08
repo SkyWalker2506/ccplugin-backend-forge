@@ -49,7 +49,7 @@ SECRETS_DIR="$HOME/.claude/secrets"
 if [ -d "$SECRETS_DIR" ]; then
   chmod 700 "$SECRETS_DIR"
   [ -f "$SECRETS_DIR/secrets.env" ] && chmod 600 "$SECRETS_DIR/secrets.env"
-  for f in "$SECRETS_DIR/projects/"*.env 2>/dev/null; do
+  for f in "$SECRETS_DIR"/projects/*.env; do
     [ -f "$f" ] && chmod 600 "$f"
   done
 fi
