@@ -101,6 +101,7 @@ EXPECTED_INSTALL_DIR="$TEMP_DIR/.claude/skills/backend-forge"
 [ -f "$TEMP_DIR/.claude/skills/backend-forge/alternatives.md" ] && pass "alternatives.md installed" || fail "alternatives.md not installed"
 [ -f "$TEMP_DIR/.claude/skills/backend-forge/SECURITY.md" ] && pass "SECURITY.md installed" || fail "SECURITY.md not installed"
 [ -f "$TEMP_DIR/.claude/skills/backend-forge/CHANGELOG.md" ] && pass "CHANGELOG.md installed" || fail "CHANGELOG.md not installed"
+[ -f "$TEMP_DIR/.claude/skills/backend-forge/VERSION" ] && pass "VERSION installed" || fail "VERSION not installed"
 # Uninstall
 HOME="$TEMP_DIR" bash "$SCRIPT_DIR/uninstall.sh" --force > /dev/null 2>&1
 [ ! -d "$EXPECTED_INSTALL_DIR" ] && pass "uninstall cleaned up" || fail "uninstall left files"

@@ -81,8 +81,8 @@ Once installed, use `setup_check` to verify your environment, then `create_proje
 // Expected output
 {
   "ok": true,
-  "tokens": { "vercel": true, "supabase": true },
-  "cli": { "vercel": true, "supabase": true },
+  "tokens": { "VERCEL_TOKEN": "set", "SUPABASE_ACCESS_TOKEN": "set" },
+  "cli": { "vercel": "accessible", "supabase": "accessible" },
   "ready": true,
   "missing": []
 }

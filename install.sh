@@ -18,6 +18,7 @@ fi
 
 mkdir -p "$SKILL_DIR"
 cp "$SCRIPT_DIR/SKILL.md" "$SKILL_DIR/SKILL.md"
+cp "$SCRIPT_DIR/VERSION" "$SKILL_DIR/VERSION"
 
 if [ -f "$SCRIPT_DIR/alternatives.md" ]; then
   cp "$SCRIPT_DIR/alternatives.md" "$SKILL_DIR/alternatives.md"
