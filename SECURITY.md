@@ -33,7 +33,9 @@ If you discover a security vulnerability, please report it privately:
 
 | Version | Supported |
 |---------|-----------|
-| 1.x     | Yes       |
+| 1.2.x   | ✅        |
+| 1.1.x   | ✅        |
+| < 1.1   | ❌        |
 
 ## Scope
 
