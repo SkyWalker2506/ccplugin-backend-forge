@@ -17,11 +17,11 @@ description: "Machine-callable infrastructure API layer. Other AI agents, MCPs, 
 
 ```
 ~/.claude/secrets/
-├── secrets.env              # Genel: AI keys, Supabase token, AUTH_* credentials
+├── secrets.env              # General: AI keys, Supabase token, AUTH_* credentials
 └── projects/
-    ├── coinhq.env           # Proje bazli: SUPABASE_URL, DB_PASSWORD, vs.
+    ├── coinhq.env           # Per-project: SUPABASE_URL, DB_PASSWORD, etc.
     ├── artlift.env
-    └── {project-name}.env   # Yeni proje → yeni dosya
+    └── {project-name}.env   # New project → new file
 ```
 
 **General keys** (secrets.env):
