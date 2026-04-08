@@ -11,7 +11,6 @@
     "database": {
       "name": null,
       "ready": false,
-      "access_token": null,
       "org_id": null
     },
     "auth": {
@@ -32,7 +31,7 @@
       "via": "hosting"
     }
   },
-  "projects": [],
+  "projects": {},
   "preferences": {
     "language": "tr",
     "default_framework": "nextjs",

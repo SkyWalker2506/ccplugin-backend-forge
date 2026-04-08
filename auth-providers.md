@@ -93,7 +93,7 @@ AUTH_KEYCLOAK_URL=
 ### 3. Save and push
 
 ```bash
-cd ~/.claude/secrets && git add -A && git commit -m "add auth providers" && git push
+cd ~/.claude/secrets && git add secrets.env && git commit -m "add auth providers" && git push
 ```
 
 ### 4. Use in any project

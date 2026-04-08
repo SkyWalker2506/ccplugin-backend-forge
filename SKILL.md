@@ -1,5 +1,5 @@
 ---
-name: infra-agent
+name: backend-forge
 description: "Machine-callable infrastructure API layer. Other AI agents, MCPs, and skills call this to deploy projects live. NOT for direct user interaction. Trigger when any agent needs: project creation, deployment, database setup, auth config, env variables, or any infra operation. Provides standardized commands that execute real API calls with minimal tokens. Integrates with cloud-secrets for credential management."
 ---
 
@@ -70,7 +70,14 @@ Exec: Vercel MCP deploy → poll until ready
 IN:  { "project": "x", "sql": "CREATE TABLE..." }
 OUT: { "ok": true }
 ```
-Exec: Supabase `POST /v1/projects/{ref}/database/query`
+
+**SQL Safety:** Before execution, reject any SQL containing dangerous keywords:
+`DROP DATABASE`, `DROP SCHEMA`, `GRANT`, `REVOKE`, `ALTER ROLE`, `CREATE ROLE`,
+`COPY TO`, `pg_dump`, `pg_read_file`, `pg_write_file`, `lo_import`, `lo_export`.
+Return `{ "ok": false, "error": "blocked_sql", "detail": "Dangerous SQL keyword detected: [keyword]" }`.
+Only `public` schema is allowed — queries targeting `pg_catalog`, `information_schema` (write), or `auth` schema are blocked.
+
+Exec: Validate SQL → Supabase `POST /v1/projects/{ref}/database/query`
 
 ### `db_schema`
 ```json
@@ -142,9 +149,10 @@ OUT: { "projects": [{ "name":"x", "url":"...", "status":"ready" }] }
 
 ### `destroy`
 ```json
-IN:  { "project": "x", "confirm": true }
+IN:  { "project": "x", "confirm": "x" }
 OUT: { "ok": true }
 ```
+**Safety:** `confirm` must be the exact project name (not a boolean). Mismatched name → `{ "ok": false, "error": "confirm_mismatch", "detail": "confirm value must match project name" }`.
 
 ---
 
