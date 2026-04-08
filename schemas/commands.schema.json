@@ -155,6 +155,40 @@
         "required": ["ok"]
       }
     },
+    "setup_check": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "cmd": { "type": "string", "const": "setup_check" }
+        },
+        "required": ["cmd"]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "tokens": {
+            "type": "object",
+            "properties": {
+              "vercel": { "type": "boolean" },
+              "supabase": { "type": "boolean" }
+            },
+            "required": ["vercel", "supabase"]
+          },
+          "cli": {
+            "type": "object",
+            "properties": {
+              "vercel": { "type": "boolean" },
+              "supabase": { "type": "boolean" }
+            },
+            "required": ["vercel", "supabase"]
+          },
+          "ready": { "type": "boolean" },
+          "missing": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["ok", "tokens", "cli", "ready", "missing"]
+      }
+    },
     "status": {
       "input": {
         "type": "object",
