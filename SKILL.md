@@ -231,8 +231,20 @@ When state version changes, auto-migrate on first read:
 
 ## Error Format
 ```json
-{ "ok": false, "error": "missing_secret|quota_exceeded|api_error|not_found", "detail": "..." }
+{ "ok": false, "error": "<code>", "detail": "..." }
 ```
+
+| Code | Meaning |
+|------|---------|
+| `missing_secret` | required env var or secret not set |
+| `quota_exceeded` | Vercel or Supabase plan limit reached |
+| `api_error` | upstream API returned an error |
+| `not_found` | requested resource does not exist |
+| `blocked_sql` | SQL statement blocked by safety rules |
+| `confirm_mismatch` | confirmation string did not match project name |
+| `rate_limited` | command rate limit exceeded |
+| `state_version_unsupported` | state.json version incompatible with this plugin version |
+| `invalid_input` | request parameters failed validation |
 
 ## Audit Logging
 
