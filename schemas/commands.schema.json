@@ -3,6 +3,10 @@
   "title": "backend-forge Command Schemas",
   "description": "JSON Schema definitions for all backend-forge commands",
   "definitions": {
+    "dry_run": {
+      "type": "boolean",
+      "default": false
+    },
     "error_response": {
       "type": "object",
       "properties": {
@@ -18,7 +22,7 @@
         "properties": {
           "name": { "type": "string", "pattern": "^[a-z0-9-]+$", "maxLength": 50 },
           "framework": { "type": "string", "enum": ["nextjs", "remix", "nuxt", "sveltekit", "astro"], "default": "nextjs" },
-          "dry_run": { "type": "boolean", "default": false }
+          "dry_run": { "$ref": "#/definitions/dry_run" }
         },
         "required": ["name"]
       },
@@ -38,7 +42,7 @@
         "type": "object",
         "properties": {
           "project": { "type": "string" },
-          "dry_run": { "type": "boolean", "default": false }
+          "dry_run": { "$ref": "#/definitions/dry_run" }
         },
         "required": ["project"]
       },
@@ -58,7 +62,7 @@
         "properties": {
           "project": { "type": "string" },
           "sql": { "type": "string", "maxLength": 10000 },
-          "dry_run": { "type": "boolean", "default": false }
+          "dry_run": { "$ref": "#/definitions/dry_run" }
         },
         "required": ["project", "sql"]
       },
@@ -79,7 +83,7 @@
           "project": { "type": "string" },
           "tables": { "type": "object", "additionalProperties": { "type": "object", "additionalProperties": { "type": "string" } } },
           "rls": { "type": "boolean", "default": true },
-          "dry_run": { "type": "boolean", "default": false }
+          "dry_run": { "$ref": "#/definitions/dry_run" }
         },
         "required": ["project", "tables"]
       },
@@ -98,7 +102,7 @@
         "properties": {
           "project": { "type": "string" },
           "providers": { "type": "array", "items": { "type": "string", "enum": ["email", "google", "facebook", "apple", "github", "twitter", "discord", "linkedin", "spotify", "twitch", "slack", "notion", "bitbucket", "gitlab", "azure", "keycloak", "phone"] } },
-          "dry_run": { "type": "boolean", "default": false }
+          "dry_run": { "$ref": "#/definitions/dry_run" }
         },
         "required": ["project", "providers"]
       },
@@ -118,7 +122,7 @@
         "properties": {
           "project": { "type": "string" },
           "vars": { "type": "object", "additionalProperties": { "type": "string" } },
-          "dry_run": { "type": "boolean", "default": false }
+          "dry_run": { "$ref": "#/definitions/dry_run" }
         },
         "required": ["project", "vars"]
       },
@@ -138,7 +142,7 @@
           "project": { "type": "string" },
           "bucket": { "type": "string" },
           "public": { "type": "boolean", "default": false },
-          "dry_run": { "type": "boolean", "default": false }
+          "dry_run": { "$ref": "#/definitions/dry_run" }
         },
         "required": ["project", "bucket"]
       },
