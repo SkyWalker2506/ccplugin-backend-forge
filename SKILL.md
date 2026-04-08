@@ -286,6 +286,66 @@ Collected (anonymous, no PII):
 NOT collected: project names, URLs, secrets, SQL content.
 Endpoint: configurable in state.json. Default: none (local-only counters in state.json `_telemetry`).
 
+## Integration Example
+
+Complete agent workflow — project creation to production-ready deployment.
+
+> If any step returns `ok: false`, halt immediately and call `destroy` to clean up.
+
+**Step 1: setup_check — Verify environment**
+```json
+IN:  {}
+OUT: { "ok": true, "ready": true, "missing": [] }
+```
+
+**Step 2: create_project — Create project, capture IDs**
+```json
+IN:  { "name": "taskflow", "framework": "nextjs" }
+OUT: {
+  "ok": true,
+  "project_id": "prj_Rk4mNx7Lw2z",
+  "db_ref": "xyzabcdefghij",
+  "vercel_url": "taskflow.vercel.app",
+  "supabase_url": "https://xyzabcdefghij.supabase.co",
+  "env_set": true
+}
+// Capture: project_id="prj_Rk4mNx7Lw2z", db_ref="xyzabcdefghij"
+```
+
+**Step 3: db_schema — Create tables using captured db_ref**
+```json
+IN:  {
+  "project": "taskflow",
+  "tables": {
+    "users":  { "id": "uuid pk", "email": "text unique", "created_at": "timestamp" },
+    "tasks":  { "id": "uuid pk", "user_id": "fk:users.id", "title": "text", "done": "boolean" }
+  },
+  "rls": true
+}
+OUT: { "ok": true, "tables_created": ["users", "tasks"] }
+```
+
+**Step 4: deploy — Deploy and capture URL**
+```json
+IN:  { "project": "taskflow" }
+OUT: { "ok": true, "url": "https://taskflow-git-main.vercel.app", "status": "ready" }
+// Capture: deployment_url="https://taskflow-git-main.vercel.app"
+```
+
+**Step 5: auth_setup — Configure auth providers**
+```json
+IN:  { "project": "taskflow", "providers": ["email", "google", "github"] }
+OUT: {
+  "ok": true,
+  "providers_enabled": ["email", "google", "github"],
+  "pending_config": []
+}
+```
+
+Project is now live at `https://taskflow-git-main.vercel.app` with database and auth fully configured.
+
+---
+
 ## Rules for Calling Agents
 - JSON in, JSON out — no prose
 - No confirmation prompts — execute directly
