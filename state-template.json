@@ -1,0 +1,44 @@
+{
+  "version": "1.0",
+  "setup_complete": false,
+  "providers": {
+    "hosting": {
+      "name": "vercel",
+      "ready": false,
+      "via": "mcp",
+      "notes": "Connected via Claude MCP integration"
+    },
+    "database": {
+      "name": null,
+      "ready": false,
+      "access_token": null,
+      "org_id": null
+    },
+    "auth": {
+      "name": null,
+      "ready": false,
+      "via": "database"
+    },
+    "storage": {
+      "name": null,
+      "ready": false,
+      "via": "database"
+    },
+    "edge_functions": {
+      "name": "vercel",
+      "ready": false,
+      "via": "hosting"
+    }
+  },
+  "projects": [],
+  "preferences": {
+    "language": "tr",
+    "default_framework": "nextjs",
+    "auto_deploy": true,
+    "default_region": "eu-central-1",
+    "notifications": {
+      "email_on_deploy": false,
+      "jira_on_create": false
+    }
+  }
+}
