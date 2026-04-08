@@ -17,12 +17,13 @@ lint: schema-validate
 	@if command -v shellcheck >/dev/null 2>&1; then \
 		shellcheck install.sh uninstall.sh test.sh && echo "shellcheck passed"; \
 	else \
-		echo "shellcheck not installed — skipping (install with: brew install shellcheck)"; \
+		echo "ERROR: shellcheck not installed. Install: brew install shellcheck" && exit 1; \
 	fi
 
 check: schema-validate test lint
 
 schema-validate:
+	@[ -d schemas ] || { echo "ERROR: schemas/ directory not found"; exit 1; }
 	@echo "Validating JSON schemas in schemas/..."; \
 	failed=0; \
 	for f in schemas/*.json; do \
