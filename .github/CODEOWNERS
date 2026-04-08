@@ -1,0 +1,11 @@
+# Global owner — all files require review by maintainer
+* @SkyWalker2506
+
+# Critical files — explicitly listed for emphasis
+SKILL.md @SkyWalker2506
+VERSION @SkyWalker2506
+CHANGELOG.md @SkyWalker2506
+install.sh @SkyWalker2506
+uninstall.sh @SkyWalker2506
+schemas/ @SkyWalker2506
+state-template.json @SkyWalker2506
