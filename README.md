@@ -39,6 +39,20 @@ Building a full-stack app with Claude means the AI needs to provision real infra
 - **Fail fast** — 1 retry max, structured error responses
 - **Alternative providers** — Swap Supabase for Neon, PlanetScale, or Turso when needed
 
+## How It Works
+
+```
+[Any AI Agent / MCP / Skill]  →  [backend-forge cmd]  →  [cloud-secrets]  →  [Provider API]  →  JSON result
+```
+
+backend-forge operates as a three-layer pipeline between calling agents and cloud provider APIs:
+
+1. **Agent interface** — `SKILL.md` defines every command with its inputs, outputs, and execution steps. Agents call commands as JSON; responses are always structured JSON. No prose, no confirmation prompts.
+
+2. **Secrets resolution** — Credentials are read automatically from `~/.claude/secrets/secrets.env`. Shared API tokens (Vercel, Supabase) live there alongside per-project files under `projects/{name}.env`. No credentials are passed in the request body.
+
+3. **Provider APIs** — Vercel CLI/MCP and Supabase REST execute the actual infrastructure operations (project creation, deployments, database queries, auth config, storage buckets). Results are normalized and returned as JSON to the caller.
+
 ## Commands
 
 | Command | Description |
