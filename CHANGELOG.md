@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.0] - 2026-04-08
+
+### Added
+- `schemas/` directory with `state.schema.json` and `commands.schema.json` (uses `$ref` for dry_run deduplication)
+- `VERSION` file for single-source version tracking
+- `Makefile` with install, uninstall, test, and lint targets
+- `CONTRIBUTING.md` with development workflow and contribution guidelines
+- GitHub Actions release workflow for automated versioning
+- `uninstall.sh`: `--force` flag and interactive y/N confirmation prompt
+- `test.sh`: tests 9–13 covering new functionality
+- `auth-providers.md`: PRIVATE repository warning added
+- `.gitignore`: `forge/`, `.jira-state/`, `.claude/` entries added
+
+### Changed
+- `state-template.json` updated to v2: added `_rate`, `_telemetry`, and `preferences.telemetry` fields
+- `SKILL.md` title fixed to "Backend Forge"
+- `install.sh`: reads `VERSION` file for version injection, copies `schemas/`, `SECURITY.md`, and `CHANGELOG.md` to install target, fixed for-loop syntax
+- `test.sh`: arithmetic fix (`PASS=$((PASS+1))`)
+- `README` version badge updated to 1.2.0
+- `FUNDING.yml` username fixed
+
 ## [1.1.0] - 2026-04-08
 
 ### Added
