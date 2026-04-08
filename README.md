@@ -4,6 +4,7 @@
 ![version](https://img.shields.io/badge/version-1.2.0-blue?style=flat-square)
 ![infra](https://img.shields.io/badge/infra-API--layer-orange?style=flat-square)
 ![plugin](https://img.shields.io/badge/plugin-open--source-green?style=flat-square)
+[![Tests](https://github.com/SkyWalker2506/ccplugin-backend-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/SkyWalker2506/ccplugin-backend-forge/actions/workflows/ci.yml)
 
 > Part of the [Claude Code Plugin Marketplace](https://github.com/SkyWalker2506/claude-marketplace) — `./install.sh backend-forge`
 
