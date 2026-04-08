@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run smoke tests
+        run: bash test.sh
+
+      - name: Validate schemas
+        run: |
+          for f in schemas/*.json state-template.json; do
+            python3 -c "import json; json.load(open('$f'))" || exit 1
+            echo "✓ $f valid"
+          done
+
+      - name: Extract version
+        id: version
+        run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
+
+      - name: Extract changelog
+        id: changelog
+        run: |
+          VERSION=$(cat VERSION)
+          NOTES=$(awk "/^## \[$VERSION\]/{found=1; next} found && /^## \[/{exit} found{print}" CHANGELOG.md)
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "v${{ steps.version.outputs.version }}"
+          body: ${{ steps.changelog.outputs.notes }}
+          files: |
+            install.sh
+            uninstall.sh
+            SKILL.md
+            VERSION
