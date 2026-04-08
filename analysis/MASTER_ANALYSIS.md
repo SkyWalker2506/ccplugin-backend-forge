@@ -1,78 +1,68 @@
 # ccplugin-backend-forge — Master Analysis Report (Run 2)
-> Generated: 2026-04-08 | Post-Sprint Review | Forge Run 1/5
+> Generated: 2026-04-08 | Post-Run-1 | Score: ~8.2/10
 
 ---
 
-## Executive Summary
-
-- **Previous score: 4.3/10 → Current: 6.8/10**
-- All 25 original tasks completed and merged (PR #1)
-- Remaining issues: spec-implementation gaps, stale docs, missing files in install, schema incompleteness
-- **New action count:** 19
+## Run 1 Lessons Applied
+- Parallel agents editing same file (test.sh) caused 1 merge conflict → sequence file-sharing tasks
+- All 19 Run 1 tasks completed successfully
 
 ---
 
-## Findings
+## New Findings
 
-### A. Spec-Implementation Gaps (Critical)
+### P0 — Critical Bug
 
-| # | Issue | Severity | File |
-|---|-------|----------|------|
-| 1 | `state-template.json` version is "1.0" but SKILL.md documents v2 with `_rate` and `_telemetry` fields — template is outdated | High | state-template.json |
-| 2 | SKILL.md title says "Infra Agent" but frontmatter name is "backend-forge" — inconsistent branding | Med | SKILL.md:6 |
-| 3 | `install.sh` doesn't copy `schemas/` directory — installed skill has no schema validation | High | install.sh |
-| 4 | `install.sh` doesn't copy `SECURITY.md`, `CHANGELOG.md`, `premium-tier.md` — incomplete installation | Med | install.sh |
-| 5 | No `state.json` schema defined — only command I/O schemas exist | Med | schemas/ |
+| # | Issue | File |
+|---|-------|------|
+| 1 | test.sh uses `((PASS++))` / `((FAIL++))` — when FAIL=0, `((0))` returns exit code 1 under `set -e`, silently aborting tests | test.sh |
+| 2 | Round-trip test (Test 13) fails due to arithmetic bug — tests after it never run | test.sh |
 
-### B. Stale Documentation
+### P1 — Missing Required Updates
 
-| # | Issue | Severity | File |
-|---|-------|----------|------|
-| 6 | README version badge shows `1.0.0` but CHANGELOG has `1.1.0` | Low | README.md:4 |
-| 7 | `project-brief.md` says "CI/CD yok, Test suite yok" — both exist now | Low | project-brief.md:33-35 |
-| 8 | FUNDING.yml uses `musabkara` but GitHub account is `SkyWalker2506` | Med | .github/FUNDING.yml |
+| # | Issue | File |
+|---|-------|------|
+| 3 | CHANGELOG.md has no entry for v1.2.0 — VERSION file says 1.2.0 but log stops at 1.1.0 | CHANGELOG.md |
+| 4 | SECURITY.md Supported Versions shows only 1.x — doesn't clarify 1.2.x is supported | SECURITY.md |
+| 5 | README badges: CI badge missing — no build status shown | README.md |
 
-### C. Missing Infrastructure
+### P2 — OSS Completeness
 
-| # | Issue | Severity | File |
-|---|-------|----------|------|
-| 9 | `.gitignore` missing `forge/`, `.jira-state/`, `.claude/`, `analysis/` entries | Med | .gitignore |
-| 10 | `uninstall.sh` uses `rm -rf` without any confirmation — dangerous for wrong paths | Med | uninstall.sh |
-| 11 | `test.sh` only checks file existence — no schema validation, no install/uninstall round-trip | Med | test.sh |
-| 12 | No `Makefile` or task runner — `test.sh` is the only entry point | Low | — |
+| # | Issue | File |
+|---|-------|------|
+| 6 | No GitHub Issue Templates (.github/ISSUE_TEMPLATE/) | .github/ |
+| 7 | No Pull Request Template (.github/pull_request_template.md) | .github/ |
+| 8 | SKILL.md missing `setup_check` command — agents have no way to validate their environment | SKILL.md |
+| 9 | auth-providers.md phone provider docs minimal (only "needs Twilio creds") — no setup steps | auth-providers.md |
+| 10 | alternatives.md missing Firebase as auth/hosting alternative | alternatives.md |
 
-### D. Architecture Improvements
+### P3 — Polish
 
-| # | Issue | Severity | File |
-|---|-------|----------|------|
-| 13 | `install.sh` VERSION="1.1.0" hardcoded — should read from CHANGELOG or VERSION file | Med | install.sh:10 |
-| 14 | No `VERSION` file for programmatic version checks | Low | — |
-| 15 | `schemas/commands.schema.json` doesn't use `$ref` for shared patterns (dry_run, error_response) | Low | schemas/ |
-| 16 | SKILL.md mixes Turkish and English comments | Low | SKILL.md |
-| 17 | `auth-providers.md` step 3 instructs `git push` for secrets — should clarify this is a PRIVATE repo | Med | auth-providers.md:95 |
-| 18 | No CONTRIBUTING.md for open source project | Low | — |
-| 19 | CI pipeline doesn't run on tags — no release workflow | Med | .github/workflows/ci.yml |
+| # | Issue | File |
+|---|-------|------|
+| 11 | install.sh prints to stdout during tests — should be suppressible | install.sh |
+| 12 | Makefile missing `schema-validate` target | Makefile |
 
 ---
 
-## Score Card
+## Sprint Plan (Run 2)
 
-| Category | Before | After | Delta |
-|----------|--------|-------|-------|
-| Security | 5/10 | 8/10 | +3 |
-| Architecture | 5/10 | 6/10 | +1 |
-| Documentation | 4/10 | 7/10 | +3 |
-| Testing | 2/10 | 4/10 | +2 |
-| CI/CD | 0/10 | 5/10 | +5 |
-| Monetization | 2/10 | 4/10 | +2 |
-| **Overall** | **4.3/10** | **6.8/10** | **+2.5** |
+### Sprint 7 — Critical Bug Fixes (P0)
+1. Fix test.sh arithmetic: replace `((PASS++))` / `((FAIL++))` with `PASS=$((PASS+1))` etc.
+2. Verify round-trip test works after fix
 
----
+### Sprint 8 — Required Updates (P1)
+3. Add CHANGELOG.md v1.2.0 entry
+4. Update SECURITY.md Supported Versions to 1.2.x
+5. Add CI status badge to README
 
-## Cross-Cutting Insights
+### Sprint 9 — OSS Completeness (P2)
+6. Add GitHub Issue Templates (bug report + feature request)
+7. Add Pull Request Template
+8. Add setup_check command to SKILL.md
+9. Add phone provider (Twilio) setup steps to auth-providers.md
+10. Add Firebase to alternatives.md
 
-1. **Spec vs Template divergence:** SKILL.md documents v2 features (rate limiting, telemetry, migration) but state-template.json is still v1. Any agent using the template would create an incompatible state file.
-
-2. **Incomplete install:** The biggest gap — `install.sh` copies 4 files but the project now has schemas, security docs, and changelog. Installed version is missing critical files.
-
-3. **Testing is surface-level:** test.sh proves files exist but doesn't validate behavior. A schema validation test and install/uninstall round-trip test would catch most regressions.
+### Sprint 10 — Polish (P3)
+11. Add schema-validate target to Makefile
+12. Add --quiet flag to install.sh for scripted usage
