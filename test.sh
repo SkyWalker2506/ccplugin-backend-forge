@@ -87,6 +87,21 @@ echo "VERSION file"
 [ -f "$SCRIPT_DIR/VERSION" ] && pass "exists" || fail "missing"
 grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' "$SCRIPT_DIR/VERSION" 2>/dev/null && pass "semver format" || fail "invalid semver"
 
+# Test 13: Install/uninstall round-trip
+echo "install/uninstall round-trip"
+TEMP_DIR="$(mktemp -d)"
+SKILL_DIR_BACKUP="${HOME}/.claude/skills/backend-forge"
+# Install to temp using env override
+HOME="$TEMP_DIR" bash "$SCRIPT_DIR/install.sh" --force > /dev/null 2>&1
+EXPECTED_INSTALL_DIR="$TEMP_DIR/.claude/skills/backend-forge"
+[ -f "$EXPECTED_INSTALL_DIR/SKILL.md" ] && pass "SKILL.md installed" || fail "SKILL.md not installed"
+[ -d "$EXPECTED_INSTALL_DIR/schemas" ] && pass "schemas/ installed" || fail "schemas/ not installed"
+[ -f "$EXPECTED_INSTALL_DIR/state-template.json" ] && pass "state-template.json installed" || fail "state-template.json not installed"
+# Uninstall
+HOME="$TEMP_DIR" bash "$SCRIPT_DIR/uninstall.sh" --force > /dev/null 2>&1
+[ ! -d "$EXPECTED_INSTALL_DIR" ] && pass "uninstall cleaned up" || fail "uninstall left files"
+rm -rf "$TEMP_DIR"
+
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ "$FAIL" -eq 0 ] && echo "All tests passed!" || exit 1
