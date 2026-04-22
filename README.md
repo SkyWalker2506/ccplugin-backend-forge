@@ -1,7 +1,7 @@
 # ccplugin-backend-forge
 
 ![claude-code](https://img.shields.io/badge/claude--code-plugin-black?style=flat-square)
-![version](https://img.shields.io/badge/version-1.3.0-blue?style=flat-square)
+![version](https://img.shields.io/badge/version-1.4.0-blue?style=flat-square)
 ![infra](https://img.shields.io/badge/infra-API--layer-orange?style=flat-square)
 ![plugin](https://img.shields.io/badge/plugin-open--source-green?style=flat-square)
 [![Tests](https://github.com/SkyWalker2506/ccplugin-backend-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/SkyWalker2506/ccplugin-backend-forge/actions/workflows/ci.yml)
