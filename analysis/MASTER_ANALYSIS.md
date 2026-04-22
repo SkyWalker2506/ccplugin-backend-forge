@@ -1,68 +1,82 @@
-# ccplugin-backend-forge — Master Analysis Report (Run 2)
-> Generated: 2026-04-08 | Post-Run-1 | Score: ~8.2/10
+# ccplugin-backend-forge — Master Analysis Report (Run 6)
+> Generated: 2026-04-22 | Post-Run-5 | Score: ~9.9/10
 
 ---
 
-## Run 1 Lessons Applied
-- Parallel agents editing same file (test.sh) caused 1 merge conflict → sequence file-sharing tasks
-- All 19 Run 1 tasks completed successfully
+## Run 5 Lessons Applied
+- Project reached production quality: 39 tests, full CI, OSS-complete docs
+- Run 5 explicitly recommended: v1.3.0 tag, `list_projects` command, `update_project` command, integration test expansion
+- All 39 tests passing on main at b19c266
+
+---
+
+## Current State
+
+| Area | Status | Notes |
+|------|--------|-------|
+| Core commands | ✅ Complete | 9 commands fully specced + tested |
+| Tests | ✅ 39 passing | Schema, install, round-trip, secrets, version |
+| CI/CD | ✅ Complete | lint → test → schema-validate, release workflow ready |
+| Docs | ✅ Complete | README, SKILL.md, auth-providers, alternatives, SECURITY, CHANGELOG |
+| OSS files | ✅ Complete | CODEOWNERS, .editorconfig, issue templates, PR template |
+| v1.3.0 tag | ❌ Not tagged | Release workflow ready but tag never pushed |
 
 ---
 
 ## New Findings
 
-### P0 — Critical Bug
+### P0 — Missing Release
 
 | # | Issue | File |
 |---|-------|------|
-| 1 | test.sh uses `((PASS++))` / `((FAIL++))` — when FAIL=0, `((0))` returns exit code 1 under `set -e`, silently aborting tests | test.sh |
-| 2 | Round-trip test (Test 13) fails due to arithmetic bug — tests after it never run | test.sh |
+| 1 | VERSION=1.3.0 but no git tag v1.3.0 exists — release workflow never triggered, no GitHub Release created | .git / GitHub |
 
-### P1 — Missing Required Updates
-
-| # | Issue | File |
-|---|-------|------|
-| 3 | CHANGELOG.md has no entry for v1.2.0 — VERSION file says 1.2.0 but log stops at 1.1.0 | CHANGELOG.md |
-| 4 | SECURITY.md Supported Versions shows only 1.x — doesn't clarify 1.2.x is supported | SECURITY.md |
-| 5 | README badges: CI badge missing — no build status shown | README.md |
-
-### P2 — OSS Completeness
+### P1 — Missing Commands (recommended by Run 5)
 
 | # | Issue | File |
 |---|-------|------|
-| 6 | No GitHub Issue Templates (.github/ISSUE_TEMPLATE/) | .github/ |
-| 7 | No Pull Request Template (.github/pull_request_template.md) | .github/ |
-| 8 | SKILL.md missing `setup_check` command — agents have no way to validate their environment | SKILL.md |
-| 9 | auth-providers.md phone provider docs minimal (only "needs Twilio creds") — no setup steps | auth-providers.md |
-| 10 | alternatives.md missing Firebase as auth/hosting alternative | alternatives.md |
+| 2 | `list_projects` missing as first-class command — currently `status` with no args does this, but no dedicated schema/spec | SKILL.md, schemas/commands.schema.json |
+| 3 | `update_project` missing — no way for agents to update project config post-creation (env vars, framework, region) | SKILL.md, schemas/commands.schema.json |
+
+### P2 — Test Coverage Gaps
+
+| # | Issue | File |
+|---|-------|------|
+| 4 | No test for `list_projects` command schema once added | test.sh |
+| 5 | No test for `update_project` command schema once added | test.sh |
+| 6 | No test verifying `status` all-projects output shape in schema | test.sh |
+| 7 | No integration test simulating MCP tool call sequences (currently schema-only) | test.sh |
 
 ### P3 — Polish
 
 | # | Issue | File |
 |---|-------|------|
-| 11 | install.sh prints to stdout during tests — should be suppressible | install.sh |
-| 12 | Makefile missing `schema-validate` target | Makefile |
+| 8 | CHANGELOG `[Unreleased]` section is empty — should describe what's coming in 1.4.0 | CHANGELOG.md |
+| 9 | README version badge shows 1.3.0 but links to releases page — once tagged, verify badge resolves correctly | README.md |
+| 10 | `state-template.json` has no `update_project` rate entry — needed once command is added | state-template.json |
 
 ---
 
-## Sprint Plan (Run 2)
+## Sprint Plan (Run 6)
 
-### Sprint 7 — Critical Bug Fixes (P0)
-1. Fix test.sh arithmetic: replace `((PASS++))` / `((FAIL++))` with `PASS=$((PASS+1))` etc.
-2. Verify round-trip test works after fix
+### Sprint 1 — Release & New Commands (P0+P1)
+1. Create and push v1.3.0 git tag to trigger GitHub Release
+2. Add `list_projects` as first-class command to SKILL.md and commands.schema.json
+3. Add `update_project` command to SKILL.md and commands.schema.json
+4. Add `update_project` rate entry to state-template.json
 
-### Sprint 8 — Required Updates (P1)
-3. Add CHANGELOG.md v1.2.0 entry
-4. Update SECURITY.md Supported Versions to 1.2.x
-5. Add CI status badge to README
+### Sprint 2 — Test Coverage (P2)
+5. Add tests 17-20: list_projects schema, update_project schema, status all-projects shape, MCP sequence simulation
+6. Update CHANGELOG [Unreleased] to describe v1.4.0 additions
+7. Bump VERSION to 1.4.0 and update CHANGELOG with v1.4.0 entry
 
-### Sprint 9 — OSS Completeness (P2)
-6. Add GitHub Issue Templates (bug report + feature request)
-7. Add Pull Request Template
-8. Add setup_check command to SKILL.md
-9. Add phone provider (Twilio) setup steps to auth-providers.md
-10. Add Firebase to alternatives.md
+### Sprint 3 — Final Audit & Polish (P3)
+8. Final test run with all new tests
+9. Update MASTER_ANALYSIS.md with Run 6 completion summary
 
-### Sprint 10 — Polish (P3)
-11. Add schema-validate target to Makefile
-12. Add --quiet flag to install.sh for scripted usage
+---
+
+## Score Assessment
+- Pre-run-6: 9.9/10
+- Expected post-run-6: 10/10 (v1.3.0 tagged, list_projects + update_project commands, 43+ tests)
+- Diminishing returns: YES — but Run 5 explicitly recommended these tasks, so this is the intentional final cycle
