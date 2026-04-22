@@ -5,6 +5,15 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-04-22
+
+### Added
+- `list_projects` command: explicit first-class command returning all projects with name, url, status, vercel_id, supabase_ref
+- `update_project` command: post-creation config updates for framework, region, and env vars without recreating the project
+- Tests 17-20: schema coverage for list_projects, update_project, status all-projects shape, and new _rate entries
+- `status` command schema now uses `oneOf` to formally describe both single-project and all-projects response shapes
+- `list_projects` and `update_project` rate tracking entries in state-template.json
+
 ## [1.3.0] - 2026-04-08
 
 ### Added
