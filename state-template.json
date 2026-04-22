@@ -53,7 +53,9 @@
     "env_set": { "count": 0, "reset_at": null },
     "storage_create": { "count": 0, "reset_at": null },
     "status": { "count": 0, "reset_at": null },
-    "setup_check": { "count": 0, "reset_at": null }
+    "setup_check": { "count": 0, "reset_at": null },
+    "list_projects": { "count": 0, "reset_at": null },
+    "update_project": { "count": 0, "reset_at": null }
   },
   "_telemetry": {
     "commands": {},
