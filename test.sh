@@ -61,7 +61,7 @@ echo "schema structure"
 python3 -c "
 import json, sys
 s = json.load(open('$SCRIPT_DIR/schemas/commands.schema.json'))
-cmds = ['create_project','deploy','db_exec','db_schema','auth_setup','env_set','storage_create','status','destroy']
+cmds = ['create_project','deploy','db_exec','db_schema','auth_setup','env_set','storage_create','status','destroy','list_projects','update_project']
 for c in cmds:
     assert c in s['definitions'], f'{c} missing from schema'
 " 2>/dev/null && pass "all commands in schema" || fail "missing commands in schema"
@@ -138,6 +138,53 @@ if grep -q "^## \[" "$SCRIPT_DIR/CHANGELOG.md" 2>/dev/null; then
   pass "CHANGELOG has versioned section"
 else
   fail "CHANGELOG missing versioned sections (## [x.y.z] format)"
+fi
+
+# Test 17: list_projects schema definition
+section "list_projects schema"
+if python3 -c "import json; d=json.load(open('$SCRIPT_DIR/schemas/commands.schema.json')); assert 'list_projects' in d.get('definitions',{})" 2>/dev/null; then
+  pass "list_projects definition in commands schema"
+else
+  fail "list_projects definition missing from commands schema"
+fi
+
+# Test 18: update_project schema definition
+section "update_project schema"
+if python3 -c "import json; d=json.load(open('$SCRIPT_DIR/schemas/commands.schema.json')); assert 'update_project' in d.get('definitions',{})" 2>/dev/null; then
+  pass "update_project definition in commands schema"
+else
+  fail "update_project definition missing from commands schema"
+fi
+
+# Test 19: status all-projects output shape
+section "status all-projects output shape"
+if python3 -c "
+import json
+d = json.load(open('$SCRIPT_DIR/schemas/commands.schema.json'))
+st = d['definitions']['status']
+out = st.get('output', {})
+# Verify oneOf contains projects shape
+one_of = out.get('oneOf', [])
+has_projects = any('projects' in o.get('properties', {}) for o in one_of)
+assert has_projects, 'status output missing all-projects shape'
+" 2>/dev/null; then
+  pass "status output has all-projects oneOf shape"
+else
+  fail "status output missing all-projects shape"
+fi
+
+# Test 20: list_projects and update_project _rate entries in state-template
+section "new commands _rate entries"
+if python3 -c "
+import json
+d = json.load(open('$SCRIPT_DIR/state-template.json'))
+rate = d.get('_rate', {})
+assert 'list_projects' in rate, 'list_projects missing from _rate'
+assert 'update_project' in rate, 'update_project missing from _rate'
+" 2>/dev/null; then
+  pass "list_projects and update_project in state-template _rate"
+else
+  fail "new commands missing from state-template _rate"
 fi
 
 echo ""

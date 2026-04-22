@@ -217,6 +217,33 @@ OUT: {
 }
 ```
 
+### `list_projects`
+```json
+IN:  {}
+OUT: {
+  "ok": true,
+  "projects": [
+    {
+      "name": "x",
+      "url": "https://x.vercel.app",
+      "status": "active|inactive",
+      "vercel_id": "prj_...",
+      "supabase_ref": "abcdefghij"
+    }
+  ]
+}
+```
+Exec: Read state.json `projects` → enrich with Vercel MCP `get_project` for live status. Returns empty array if no projects exist.
+
+### `update_project`
+```json
+IN:  { "project": "x", "framework": "remix", "region": "sfo1", "env": { "KEY": "value" } }
+OUT: { "ok": true, "updated_fields": ["framework", "region", "env"] }
+```
+All fields except `project` are optional. At least one optional field must be provided.  
+Exec: If `framework` or `region` → Vercel MCP update project settings. If `env` → `env_set` internally. Updates state.json with any changed fields.  
+Error if project not found: `{ "ok": false, "error": "not_found", "detail": "project 'x' not in state" }`.
+
 ### `destroy`
 ```json
 IN:  { "project": "x", "confirm": "x" }

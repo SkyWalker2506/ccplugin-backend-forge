@@ -198,10 +198,95 @@
         }
       },
       "output": {
+        "oneOf": [
+          {
+            "description": "Single project response",
+            "type": "object",
+            "properties": {
+              "ok": { "const": true },
+              "name": { "type": "string" },
+              "url": { "type": "string", "format": "uri" },
+              "status": { "type": "string", "enum": ["ready", "building", "error"] },
+              "vercel_id": { "type": "string" },
+              "supabase_ref": { "type": "string" },
+              "framework": { "type": "string" },
+              "region": { "type": "string" }
+            },
+            "required": ["ok"]
+          },
+          {
+            "description": "All projects response",
+            "type": "object",
+            "properties": {
+              "ok": { "const": true },
+              "projects": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "url": { "type": "string", "format": "uri" },
+                    "status": { "type": "string", "enum": ["active", "inactive"] },
+                    "vercel_id": { "type": "string" },
+                    "supabase_ref": { "type": "string" }
+                  },
+                  "required": ["name", "status"]
+                }
+              }
+            },
+            "required": ["ok", "projects"]
+          }
+        ]
+      }
+    },
+    "list_projects": {
+      "input": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output": {
         "type": "object",
         "properties": {
-          "projects": { "type": "array" }
-        }
+          "ok": { "const": true },
+          "projects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "url": { "type": "string", "format": "uri" },
+                "status": { "type": "string", "enum": ["active", "inactive"] },
+                "vercel_id": { "type": "string" },
+                "supabase_ref": { "type": "string" }
+              },
+              "required": ["name", "status"]
+            }
+          }
+        },
+        "required": ["ok", "projects"]
+      }
+    },
+    "update_project": {
+      "input": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "framework": { "type": "string", "enum": ["nextjs", "remix", "nuxt", "sveltekit", "astro"] },
+          "region": { "type": "string" },
+          "env": { "type": "object", "additionalProperties": { "type": "string" } },
+          "dry_run": { "$ref": "#/definitions/dry_run" }
+        },
+        "required": ["project"],
+        "minProperties": 2
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "ok": { "const": true },
+          "updated_fields": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["ok", "updated_fields"]
       }
     },
     "destroy": {
